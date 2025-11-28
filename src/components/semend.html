@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Image Upload & Preview</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .preview {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 2px solid #444;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 10px;
+    }
+    #removeBtn { margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Profile Picture Upload</h2>
+
+  <img id="preview" class="preview" src="" alt="No image selected">
+
+  <input type="file" id="fileInput" accept="image/*">
+  <button id="removeBtn">Remove</button>
+
+  <script>
+    const fileInput  = document.getElementById('fileInput');
+    const preview    = document.getElementById('preview');
+    const removeBtn  = document.getElementById('removeBtn');
+    const LS_KEY     = 'profileImage';
+
+    window.addEventListener('load', () => {
+      const dataUrl = localStorage.getItem(LS_KEY);
+      if (dataUrl) {
+        preview.src = dataUrl;
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        const dataUrl = e.target.result;
+        preview.src = dataUrl;
+        localStorage.setItem(LS_KEY, dataUrl);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    removeBtn.addEventListener('click', () => {
+      preview.src = '';
+      localStorage.removeItem(LS_KEY);
+      fileInput.value = '';
+    });
+  </script>
+</body>
+</html>
